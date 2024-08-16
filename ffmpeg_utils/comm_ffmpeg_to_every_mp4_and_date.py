@@ -37,24 +37,27 @@ def main():
     "Ignore dates\n\t(new files will have today date)",
     "Insert filenames date pattern\n\t(must be the same for all files to process) e.g.:\n\tfilename = 'VID_20240612_211403_video.mp4'\n\tpattern  = '____YYYYMMDD_hhmmss'",
     "Take modification date from every file\n\t(NB it could not be your file creation date, be careful if you are concerned about dates)",
-  ] # show choices
-  for i, date in enumerate(date_choices):
-    print(f"  {i+1}. {date}")
-  date_choice_index = int(input("\nChoose an option number: ")) - 1
-
+  ]
+  
+  # show choices
+  for i, date in enumerate(date_choices, 1):
+    print(f"{i:>4}. {date}")
+  date_choice_index = int(input("\nChoose an option number: "))
 
   # insert pattern if asked
-  if date_choice_index == 1:
+  if date_choice_index == 2:
     pattern = input("\nInsert filneames pattern: ")
 
 
-  message = "" # main terminal screen
-  i = 0 # processed files counter
-  # for every file in current directory
-  for fname in os.listdir():
+  message = ""  # main terminal screen
+
+  # files to process
+  files = [f for f in os.listdir() if f.endswith(".mp4") and not f.endswith("_ff.mp4")]
+
+
+  for i, fname in enumerate(files, 1):
     if fname.endswith(".mp4") and not fname.endswith("_ff.mp4"):
-      i += 1
-      
+          
       # append ff for new filename
       new_name = fname[:-4] + "_ff.mp4"
       # curent command to execute
@@ -63,17 +66,22 @@ def main():
         inner_command = args.ffmpeg_options, 
         out_mp4 = new_name
       )
-      # print(cur_command)
 
       # show info in current screen
-      print(f"  {i}. Processing file: '{fname}'")
-      print(f"        query: '{cur_command}'")
+      print(f"{i:>4}/{len(files)}. Processing file: '{fname}'")
+      print(f"          query: '{cur_command}'")
 
       # run ffmpeg command (one at time) into another terminal
-      if os.name == "nt": # windows
-        ffmpeg_process = subprocess.Popen(cur_command, creationflags=subprocess.CREATE_NEW_CONSOLE)
-        ffmpeg_process.wait() # for running only one command at time
-      elif os.name == "posix": # linux
+      # windows
+      if os.name == "nt":
+        ffmpeg_process = subprocess.Popen(
+          cur_command, 
+          creationflags=subprocess.CREATE_NEW_CONSOLE
+        )
+        ffmpeg_process.wait()  # for running only one command at time
+      
+      # linux
+      elif os.name == "posix":
         # TODO
         raise NotImplementedError
       else:
@@ -81,14 +89,14 @@ def main():
 
 
       # date choices
-      if date_choice_index == 0:
+      if date_choice_index == 1:
         pass
-      elif date_choice_index == 1:
-        change_date_from_filename_pattern(new_name, pattern)
       elif date_choice_index == 2:
+        change_date_from_filename_pattern(new_name, pattern)
+      elif date_choice_index == 3:
         date_transfer(fname, new_name)
 
 
       # main terminal clear message
-      message += f"\n  {i}. '{fname}'"
+      message += f"\n{i:>4}. '{fname}'"
       print_clear_terminal(message)
