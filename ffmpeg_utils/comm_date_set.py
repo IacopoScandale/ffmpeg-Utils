@@ -1,4 +1,5 @@
-from .data.utils import set_date
+from .data.utils import set_date, add_one_to_counter
+from .data.strings import DATE_SET_COMM
 from argparse import ArgumentParser, Namespace
 from datetime import datetime
 import os
@@ -52,3 +53,5 @@ def main():
     f'\n\t· from {old_date}',
     f'\n\t· to   {new_date}'
   )
+
+  add_one_to_counter(DATE_SET_COMM)

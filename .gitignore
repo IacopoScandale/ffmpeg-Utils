@@ -1,2 +1,4 @@
 __pycache__
 ffmpeg_utils.egg-info
+venv
+usage_counter.json

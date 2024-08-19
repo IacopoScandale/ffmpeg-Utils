@@ -1,4 +1,5 @@
-from .data.utils import print_clear_terminal, change_date_from_filename_pattern, date_transfer
+from .data.utils import print_clear_terminal, change_date_from_filename_pattern, date_transfer, add_one_to_counter
+from .data.strings import FFMP4_COMM
 import os
 import subprocess
 from argparse import ArgumentParser, Namespace
@@ -100,3 +101,5 @@ def main():
       # main terminal clear message
       message += f"\n{i:>4}. '{fname}'"
       print_clear_terminal(message)
+
+  add_one_to_counter(FFMP4_COMM)
